@@ -1,17 +1,7 @@
-
 import java.util.Scanner;
 
-public class Store {
+public class StoreInterface {
     
-    private String ownerName = "Martim";
-    private String storeName = "MSports";
-    private String type = "Client";
-
-    Client newClient = new Client("Joao",20.00);
-        
-    String currentName = newClient.getName();
-    Double currentBalance = newClient.getBalance();
-
     public void showStore(){
 
         Scanner option = new Scanner(System.in);
@@ -47,10 +37,4 @@ public class Store {
 
 
     }
-
-
-    
-
-
-
 }
