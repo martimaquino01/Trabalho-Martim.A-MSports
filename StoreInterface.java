@@ -1,11 +1,13 @@
 import java.util.Scanner;
 
-// it handles the user output and interacts with the store
+//it handles the user output and interacts with the store
+
 public class StoreInterface {
 
     private final Scanner scanner;
     private final Store store;
 
+    // to initialize the interface
     public StoreInterface(Store store) {
         this.store = store;
         this.scanner = new Scanner(System.in);
@@ -16,26 +18,29 @@ public class StoreInterface {
         return scanner.nextLine();
     }
 
+    
     public int readInt(String prompt) {
         String raw = readText(prompt);
-        // Se o texto não for inteiro, devolvemos -1 para o código tratar como inválido.
-        if (!isInteger(raw)) { 
-            return -1;
+
+        if (!isInteger(raw)) {
+            return -1; 
         }
-        return Integer.parseInt(raw);
+        return Integer.parseInt(raw); // to convert to an integer
     }
 
     public double readDouble(String prompt) {
         String raw = readText(prompt);
         raw = raw.replace(',', '.');
-        // Validação simples para evitar NumberFormatException e dar feedback cedo.
+
         if (!isDecimal(raw)) {
             return -1;
         }
-        return Double.parseDouble(raw);
+        return Double.parseDouble(raw); // to convert to a double
     }
 
+
     private boolean isInteger(String value) {
+
         if (value == null || value.isEmpty()) {
             return false;
         }
@@ -48,7 +53,7 @@ public class StoreInterface {
             start = 1;
         }
 
-        for (int i = start; i < value.length(); i++) {
+        for (int i = start; i < value.length(); i++) { 
             char c = value.charAt(i);
             if (c < '0' || c > '9') {
                 return false;
@@ -89,16 +94,22 @@ public class StoreInterface {
     }
 
     public void run() {
-
-        boolean showStore = true; //
+        boolean showStore = true;
 
         while (true) {
             if (showStore) {
                 store.showStoreView();
             }
 
-            String action = readText("Enter action: ").toLowerCase();
-            showStore = store.executeAction(action, this);
+            String actionInput = readText("Enter action: ");
+            String action = actionInput.toLowerCase().replaceAll("[^a-z]", ""); //convert to lowercase and remove non-alphabetic characters
+
+            if ("exit".equals(action)) {
+                System.out.println("Exiting program ...");
+                break;
+            }
+
+            showStore = store.executeAction(action, this); //execute the selected action
             System.out.println();
         }
     }

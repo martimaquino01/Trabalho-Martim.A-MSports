@@ -59,6 +59,7 @@ public class Store {
             System.out.println("  rename - Change store name");
             System.out.println("  client - Switch to a client");
             System.out.println("  register - Add new client");
+            System.out.println("  exit - Exit program");
         } else {
             System.out.println("  store - Show store view");
             System.out.println("  buy - Buy a product");
@@ -67,6 +68,7 @@ public class Store {
             System.out.println("  client - Switch to another client");
             System.out.println("  owner - Switch to owner of store");
             System.out.println("  register - Add new client");
+            System.out.println("  exit - Exit program");
         }
     }
 

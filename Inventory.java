@@ -1,4 +1,3 @@
-// Guarda produtos da loja/cliente num arranjo simples (nome, stock e preço).
 public class Inventory {
 
     private static final int MAX_PRODUCTS = 100;
@@ -7,16 +6,18 @@ public class Inventory {
     private final int[] quantities = new int[MAX_PRODUCTS];
     private final double[] prices = new double[MAX_PRODUCTS];
 
-    private int size = 0;
+    private int size = 0; //number of products in the store's inventory
 
     public int getSize() {
         return size;
     }
 
-    // Por fora usamos índices a partir de 1 para alinhar com o que o utilizador vê no ecrã.
+    
     public boolean isValidIndex(int index) {
         return index >= 1 && index <= size;
     }
+
+    //getters - product
 
     public String getNameAt(int index) {
         return names[index - 1];
@@ -30,6 +31,7 @@ public class Inventory {
         return prices[index - 1];
     }
 
+    //setters - product
     public void setNameAt(int index, String newName) {
         names[index - 1] = newName;
     }
@@ -46,6 +48,7 @@ public class Inventory {
         quantities[index - 1] = quantities[index - 1] - amount;
     }
 
+    // find products
     public int findByName(String name) {
         for (int i = 0; i < size; i++) {
             if (names[i].equalsIgnoreCase(name)) {
@@ -65,12 +68,13 @@ public class Inventory {
     }
 
     public boolean addProduct(String name, int quantity, double price) {
-        // Proteção rápida contra dados vazios, quantidades negativas ou preços inválidos.
-        if (name == null || name.isEmpty() || quantity <= 0 || price < 0) {
+
+        if (name == null || name.isEmpty() || quantity <= 0 || price < 0) { //protection : empty data, negative amounts, invalid prices
             return false;
         }
 
         int existing = findByNameAndPrice(name, price);
+
         if (existing != -1) {
             increaseQuantityAt(existing, quantity);
             return true;
@@ -88,22 +92,24 @@ public class Inventory {
     }
 
     public boolean removeProductAt(int index) {
-        // Garantimos que o índice pedido existe antes de mexer nos arrays paralelos.
+
         if (!isValidIndex(index)) {
             return false;
         }
 
         int removeAt = index - 1;
-        for (int i = removeAt; i < size - 1; i++) {
+        for (int i = removeAt; i < size - 1; i++) { //shift elements to the left
             names[i] = names[i + 1];
             quantities[i] = quantities[i + 1];
             prices[i] = prices[i + 1];
         }
 
+        //clear the last element
         names[size - 1] = null;
         quantities[size - 1] = 0;
         prices[size - 1] = 0;
         size = size - 1;
         return true;
+
     }
 }

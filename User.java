@@ -1,4 +1,3 @@
-// Representa alguém na loja: pode ser dono (sem inventário) ou cliente (com inventário).
 public class User {
 
     private final String name;
@@ -12,7 +11,7 @@ public class User {
         this.owner = owner;
 
         if (!owner) {
-            this.inventory = new Inventory(); // clientes guardam compras aqui
+            this.inventory = new Inventory(); //customers save purchases here.
         }
     }
 
