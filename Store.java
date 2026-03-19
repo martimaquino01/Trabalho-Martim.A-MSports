@@ -1,4 +1,3 @@
-// Orquestra a loja: dono, clientes e ações possíveis no fluxo de consola.
 public class Store {
 
     private String storeName;
@@ -7,13 +6,16 @@ public class Store {
     private final User[] users = new User[100];
     private int userCount = 0;
     private int currentUserIndex = 0;
-    private boolean ownerView = false; // true quando o dono está a operar a loja
+    private boolean ownerView = false; //true when the owner is operating the store
 
     public Store(String storeName, String ownerName, double ownerBalance) {
         this.storeName = storeName;
         this.owner = new User(ownerName, ownerBalance, true);
         this.storeInventory = new Inventory();
     }
+
+
+
 
     public void addUser(String name) {
         if (userCount >= users.length || name == null || name.trim().isEmpty()) {
@@ -43,7 +45,7 @@ public class Store {
         }
 
         System.out.println("Products:");
-        for (int i = 1; i <= storeInventory.getSize(); i++) {
+        for (int i = 1; i <= storeInventory.getSize(); i++) { // iterate through the inventory
             System.out.println(i + " - " + storeInventory.getNameAt(i) + " x" + storeInventory.getQuantityAt(i) + " (" + storeInventory.getPriceAt(i) + " EUR)");
         }
 
@@ -72,7 +74,7 @@ public class Store {
         }
     }
 
-    public boolean executeAction(String action, StoreInterface storeInterface) {
+    public boolean executeAction(String action, StoreInterface storeInterface) { 
         if (ownerView) {
             return executeOwnerAction(action, storeInterface);
         }
@@ -80,97 +82,91 @@ public class Store {
     }
 
     private boolean executeClientAction(String action, StoreInterface storeInterface) {
-        if ("store".equals(action)) {
-            return true;
+        switch (action) {
+            case "store":
+                return true;
+            case "buy":
+                return buy(storeInterface);
+            case "inv":
+                showCurrentClientInventory();
+                return false;
+            case "return":
+                return returnProduct(storeInterface);
+            case "client":
+                return switchUser(storeInterface);
+            case "owner":
+                ownerView = true;
+                System.out.println("Switched to store owner.");
+                return true;
+            case "register":
+                registerUser(storeInterface);
+                return false;
+            default:
+                System.out.println("Invalid action \"" + action + "\".");
+                return false;
         }
-        if ("buy".equals(action)) {
-            return buy(storeInterface);
-        }
-        if ("inv".equals(action)) {
-            showCurrentClientInventory();
-            return false;
-        }
-        if ("return".equals(action)) {
-            return returnProduct(storeInterface);
-        }
-        if ("client".equals(action)) {
-            return switchUser(storeInterface);
-        }
-        if ("owner".equals(action)) {
-            ownerView = true;
-            System.out.println("Switched to store owner.");
-            return true;
-        }
-        if ("register".equals(action)) {
-            registerUser(storeInterface);
-            return false;
-        }
-
-        System.out.println("Invalid action \"" + action + "\".");
-        return false;
     }
 
     private boolean executeOwnerAction(String action, StoreInterface storeInterface) {
-        if ("store".equals(action)) {
-            return true;
-        }
-        if ("add".equals(action)) {
-            return addProduct(storeInterface);
-        }
-        if ("remove".equals(action)) {
-            return removeProduct(storeInterface);
-        }
-        if ("edit".equals(action)) {
-            return editProduct(storeInterface);
-        }
-        if ("stock".equals(action)) {
-            return increaseStock(storeInterface);
-        }
-        if ("rename".equals(action)) {
-            return renameStore(storeInterface);
-        }
-        if ("client".equals(action)) {
-            return switchUser(storeInterface);
-        }
-        if ("register".equals(action)) {
-            registerUser(storeInterface);
-            return false;
+
+        switch (action) {
+            case "store":
+                return true;
+            case "add":
+                return addProduct(storeInterface);
+            case "remove":
+                return removeProduct(storeInterface);
+            case "edit":
+                return editProduct(storeInterface);
+            case "stock":
+                return increaseStock(storeInterface);
+            case "rename":
+                return renameStore(storeInterface);
+            case "client":
+                return switchUser(storeInterface);
+            case "register":
+                registerUser(storeInterface);
+                return false;
+            default:
+                System.out.println("Invalid action \"" + action + "\".");
+                return false;
         }
 
-        System.out.println("Invalid action \"" + action + "\".");
-        return false;
+        
     }
 
     private boolean buy(StoreInterface storeInterface) {
+
+        //validate
         if (storeInventory.getSize() == 0) {
-            System.out.println("There are no products in store.");
+            System.out.println("There are no products in store ");
             return false;
         }
 
-        int productIndex = storeInterface.readInt("Enter product index: ");
+        int productIndex = storeInterface.readInt("Enter product index : ");
         if (!storeInventory.isValidIndex(productIndex)) {
-            System.out.println("Invalid product index.");
+            System.out.println("Invalid product index ");
             return false;
         }
 
         int quantity = storeInterface.readInt("Enter quantity: ");
         if (quantity <= 0) {
-            System.out.println("Invalid quantity.");
+            System.out.println("Invalid quantity ");
             return false;
         }
 
         int stock = storeInventory.getQuantityAt(productIndex);
         String productName = storeInventory.getNameAt(productIndex);
         double price = storeInventory.getPriceAt(productIndex);
-        double total = quantity * price; // custo total desta compra
+        double total = quantity * price; 
 
-        if (stock < quantity) { // não vendemos mais do que temos
+        if (stock < quantity) { 
             System.out.println("Not enough stock to buy " + quantity + " of " + productName + ".");
             return false;
         }
 
         User current = users[currentUserIndex];
-        if (!current.canAfford(total)) { // evita saldo negativo
+        if (!current.canAfford(total)) { // avoids negative balance
             System.out.println("You don't have enough balance to buy " + quantity + " of \"" + productName + "\".");
             System.out.println("You need at least more " + (total - current.getBalance()) + " EUR.");
             return false;
@@ -191,7 +187,7 @@ public class Store {
 
         System.out.println(current.getName() + "'s inventory:");
         if (inv.getSize() == 0) {
-            System.out.println("(empty)");
+            System.out.println("( empty )");
             return;
         }
 
@@ -205,7 +201,7 @@ public class Store {
         Inventory inv = current.getInventory();
 
         if (inv.getSize() == 0) {
-            System.out.println("Your inventory is empty.");
+            System.out.println("Your inventory is empty ");
             return false;
         }
 
@@ -220,15 +216,15 @@ public class Store {
         String name = inv.getNameAt(productIndex);
         int quantity = inv.getQuantityAt(productIndex);
         double price = inv.getPriceAt(productIndex);
-        double refund = quantity * price; // reembolso total devido ao cliente
+        double refund = quantity * price; //full refund due to the customer
 
         int storeProductIndex = storeInventory.findByName(name);
         if (storeProductIndex == -1) {
-            System.out.println("Cannot return this product because it no longer exists in store.");
+            System.out.println("Cannot return this product because it no longer exists in store ");
             return false;
         }
 
-        if (owner.getBalance() < refund) { // dono não tem saldo suficiente para devolver
+        if (owner.getBalance() < refund) { //the owner does not have sufficient funds to return the item
             System.out.println("Store owner does not have enough balance to refund this return.");
             return false;
         }
@@ -267,23 +263,23 @@ public class Store {
 
     private void registerUser(StoreInterface storeInterface) {
         if (userCount >= users.length) {
-            System.out.println("Cannot register more clients.");
+            System.out.println("Cannot register more clients ");
             return;
         }
 
         String newClientName = storeInterface.readText("Enter new client name: ");
         if (newClientName.trim().isEmpty()) {
-            System.out.println("Invalid client name.");
+            System.out.println("Invalid client name");
             return;
         }
 
         addUser(newClientName);
-        System.out.println("Client \"" + newClientName + "\" added successfully.");
+        System.out.println("Client \"" + newClientName + "\" added successfully");
     }
 
     private boolean addProduct(StoreInterface storeInterface) {
         if (storeInventory.getSize() >= 100) {
-            System.out.println("Store inventory is full.");
+            System.out.println("Store inventory is full");
             return false;
         }
 
@@ -295,7 +291,7 @@ public class Store {
 
         double newPrice = storeInterface.readDouble("Enter new product price: ");
         if (newPrice < 0) {
-            System.out.println("Invalid product price.");
+            System.out.println("Invalid product price");
             return false;
         }
 
@@ -307,7 +303,7 @@ public class Store {
     private boolean removeProduct(StoreInterface storeInterface) {
         int productIndex = storeInterface.readInt("Enter product index: ");
         if (!storeInventory.removeProductAt(productIndex)) {
-            System.out.println("Invalid product index.");
+            System.out.println("Invalid product index");
             return false;
         }
 
@@ -330,7 +326,7 @@ public class Store {
 
         double newProductPrice = storeInterface.readDouble("Enter new product price: ");
         if (newProductPrice < 0) {
-            System.out.println("Invalid product price.");
+            System.out.println("Invalid product price");
             return false;
         }
 
@@ -344,13 +340,13 @@ public class Store {
     private boolean increaseStock(StoreInterface storeInterface) {
         int productIndex = storeInterface.readInt("Enter product index: ");
         if (!storeInventory.isValidIndex(productIndex)) {
-            System.out.println("Invalid product index.");
+            System.out.println("Invalid product index");
             return false;
         }
 
         int stockToAdd = storeInterface.readInt("Enter how much stock to add: ");
         if (stockToAdd <= 0) {
-            System.out.println("Invalid stock quantity.");
+            System.out.println("Invalid stock quantity");
             return false;
         }
 
