@@ -9,8 +9,8 @@ public class Main {
 //                           Default Clients
 
 
-        store.addUser("Joao");
-        store.addUser("Alice");
+        store.addUser("Pedro");
+        store.addUser("Sofia");
         store.addUser("Tomas");
 
 //                           Default Products
